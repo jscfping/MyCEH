@@ -11,7 +11,7 @@
 
 ## linux
 ```bash
-sudo systemctl start ssh
+sudo systemctl start ssh # sudo service ssh restart
 sudo su
 
 # 查網關
