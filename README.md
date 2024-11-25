@@ -26,9 +26,12 @@ sudo usermod -aG sudo cehp # 或sudo usermod -aG wheel cehp
 getent group sudo # getent group wheel
 ```
 
+[putty](https://the.earth.li/~sgtatham/putty/latest/w64/putty.exe)
+[git](https://git-scm.com/downloads/win)
+[vscode](https://code.visualstudio.com/)
 ## windows
 ```powershell
-ifconfig
+ipconfig # echo %userdomain%
 
 # 共享資料夾
 net use \\10.10.10.16 apple /u:martin
